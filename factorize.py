@@ -11,30 +11,27 @@ import math
 
 # returns primality of i
 def isPrime(i, primes):
+	if i == 2: return True
 	for p in primes:
 		if p <= math.sqrt(i):
 			if i % p == 0: return False
 		else: return True
 
-# produces a list of all primes up to the size of the square root of n
-def generatePrimes(n):
-	primes = [2]
-	bound = int(math.ceil(math.sqrt(n) + 1))
-	for i in range(3, bound):
-		if isPrime(i, primes):
-			primes.append(i)
-	return primes
-
-# produces a list of the factors of n
-def checkFactors(n, primes):
-	factors = []
-	for p in primes:
-		while n % p == 0:
-			factors.append(p)
-			n /= p
-	if n > 1: factors.append(n) # larger than all p, so the list is still sorted
-	return factors
-
 # return the prime factors of n (as a list of integers)
 def factorize(n):
-	return checkFactors(n, generatePrimes(n))
+	primes = [] # list of primes we will use to compare primality
+	factors = [] # list of factors we have found so far
+	bound = int(math.ceil(math.sqrt(n) + 1)) # bound to limit looping
+	i = 2 # the number we will be checking for primality and division
+	while i < bound:
+		if isPrime(i, primes):
+			primes.append(i)
+			divides = False
+			while n % i == 0:
+				divides = True
+				factors.append(i)
+				n /= i
+			if divides: bound = int(math.ceil(math.sqrt(n) + 1))
+		i += 1
+	if n > 1: factors.append(n) # this must be larger than all p, so the list is still sorted
+	return factors
